@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dream Destinations · Makoto Shinkai Style</title>
+  <style>
+    :root {
+      --sky: #c8e8f8;
+      --deep: #1a3a5c;
+      --gold: #f0c060;
+      --white: #f8fbff;
+      --card-bg: rgba(255,255,255,0.85);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Georgia', 'Times New Roman', serif;
+      background: linear-gradient(180deg, #a8d8f0 0%, #dff0fa 40%, #f0f8ff 100%);
+      min-height: 100vh;
+      color: var(--deep);
+    }
+
+    /* ── Hero ── */
+    .hero {
+      position: relative;
+      text-align: center;
+      padding: 80px 20px 60px;
+      background: linear-gradient(180deg, #6ab4e8 0%, #a8d8f0 60%, transparent 100%);
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1440' height='120' viewBox='0 0 1440 120'%3E%3Cellipse cx='200' cy='40' rx='180' ry='55' fill='white' opacity='.6'/%3E%3Cellipse cx='600' cy='25' rx='240' ry='50' fill='white' opacity='.7'/%3E%3Cellipse cx='1050' cy='35' rx='200' ry='48' fill='white' opacity='.65'/%3E%3Cellipse cx='1350' cy='20' rx='140' ry='40' fill='white' opacity='.6'/%3E%3C/svg%3E") center top / cover no-repeat;
+      pointer-events: none;
+    }
+    .hero h1 {
+      font-size: clamp(2rem, 5vw, 3.6rem);
+      font-weight: 300;
+      letter-spacing: 0.08em;
+      color: #fff;
+      text-shadow: 0 2px 20px rgba(30,80,140,0.35);
+      position: relative;
+    }
+    .hero h1 span { color: var(--gold); font-weight: 600; }
+    .hero p {
+      margin-top: 16px;
+      font-size: 1.1rem;
+      color: rgba(255,255,255,0.9);
+      letter-spacing: 0.04em;
+      position: relative;
+    }
+    .hero-badge {
+      display: inline-block;
+      margin-top: 22px;
+      padding: 6px 20px;
+      border: 1.5px solid rgba(255,255,255,0.6);
+      border-radius: 30px;
+      font-size: 0.82rem;
+      color: rgba(255,255,255,0.85);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      position: relative;
+    }
+
+    /* ── Grid ── */
+    .grid {
+      max-width: 1300px;
+      margin: 0 auto;
+      padding: 50px 24px 80px;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(370px, 1fr));
+      gap: 36px;
+    }
+
+    /* ── Card ── */
+    .card {
+      background: var(--card-bg);
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 8px 32px rgba(30,80,140,0.12), 0 2px 8px rgba(30,80,140,0.08);
+      transition: transform 0.35s ease, box-shadow 0.35s ease;
+      backdrop-filter: blur(8px);
+    }
+    .card:hover {
+      transform: translateY(-8px) scale(1.01);
+      box-shadow: 0 20px 50px rgba(30,80,140,0.2), 0 4px 16px rgba(30,80,140,0.1);
+    }
+    .card-img-wrap {
+      position: relative;
+      overflow: hidden;
+      aspect-ratio: 16/9;
+      background: linear-gradient(135deg, #c8e8f8, #dff0fa);
+    }
+    .card-img-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.5s ease;
+    }
+    .card:hover .card-img-wrap img { transform: scale(1.06); }
+
+    .card-num {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      width: 36px;
+      height: 36px;
+      background: rgba(255,255,255,0.85);
+      backdrop-filter: blur(6px);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--deep);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+    }
+    .card-country-tag {
+      position: absolute;
+      bottom: 14px;
+      right: 14px;
+      padding: 4px 12px;
+      background: rgba(26,58,92,0.7);
+      backdrop-filter: blur(6px);
+      border-radius: 20px;
+      font-size: 0.72rem;
+      color: #fff;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .card-body { padding: 22px 24px 26px; }
+    .card-body h2 {
+      font-size: 1.28rem;
+      font-weight: 600;
+      color: var(--deep);
+      letter-spacing: 0.02em;
+    }
+    .card-body .subtitle {
+      margin-top: 4px;
+      font-size: 0.82rem;
+      color: #7090b0;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .card-body p {
+      margin-top: 12px;
+      font-size: 0.93rem;
+      line-height: 1.7;
+      color: #3a5a7a;
+    }
+    .card-tags {
+      margin-top: 16px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .tag {
+      padding: 3px 12px;
+      background: #e8f4fc;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      color: #4a7a9a;
+      letter-spacing: 0.04em;
+    }
+
+    /* ── Footer ── */
+    footer {
+      text-align: center;
+      padding: 40px 20px;
+      font-size: 0.82rem;
+      color: #7090b0;
+      letter-spacing: 0.06em;
+      border-top: 1px solid rgba(30,80,140,0.08);
+    }
+    footer a { color: #5088b8; text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+
+    /* ── Loading placeholder ── */
+    .img-placeholder {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #b8d8f0 0%, #d8eef8 50%, #c0e0f0 100%);
+      font-size: 2.5rem;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Hero -->
+  <header class="hero">
+    <h1>10 <span>Dream</span> Destinations</h1>
+    <p>A journey through the world's most breathtaking places</p>
+    <div class="hero-badge">✦ Makoto Shinkai Anime Style ✦</div>
+  </header>
+
+  <!-- Destination Grid -->
+  <main class="grid">
+
+    <!-- 1. Santorini -->
+    <article class="card">
+      <div class="card-img-wrap">
+        <img src="images/santorini.webp" alt="Santorini, Greece" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="img-placeholder" style="display:none">🏛️</div>
+        <div class="card-num">01</div>
+        <div class="card-country-tag">Greece</div>
+      </div>
+      <div class="card-body">
+        <h2>Santorini</h2>
+        <div class="subtitle">Cyclades Islands · Aegean Sea</div>
+        <p>Iconic white-washed cubist buildings cascade down volcanic cliffs, their cobalt-blue domes glowing against one of the world's most celebrated sunsets.</p>
+        <div class="card-tags">
+          <span class="tag">Cliffside Village</span>
+          <span class="tag">Volcanic Island</span>
+          <span class="tag">Sunset Views</span>
+        </div>
+      </div>
+    </article>
+
+    <!-- 2. Kyoto -->
+    <article class="card">
+      <div class="card-img-wrap">
+        <img src="images/kyoto.webp" alt="Kyoto, Japan" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="img-placeholder" style="display:none">⛩️</div>
+        <div class="card-num">02</div>
+        <div class="card-country-tag">Japan</div>
+      </div>
+      <div class="card-body">
+        <h2>Kyoto</h2>
+        <div class="subtitle">Kansai Region · Ancient Capital</div>
+        <p>A city where ancient tradition breathes through every stone lantern and moss-covered temple. Cherry blossoms frame vermillion torii gates in timeless beauty.</p>
+        <div class="card-tags">
+          <span class="tag">Temples & Shrines</span>
+          <span class="tag">Cherry Blossoms</span>
+          <span class="tag">Traditional Culture</span>
+        </div>
+      </div>
+    </article>
+
+    <!-- 3. Paris -->
+    <article class="card">
+      <div class="card-img-wrap">
+        <img src="images/paris.webp" alt="Paris, France" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="img-placeholder" style="display:none">🗼</div>
+        <div class="card-num">03</div>
+        <div class="card-country-tag">France</div>
+      </div>
+      <div class="card-body">
+        <h2>Paris</h2>
+        <div class="subtitle">Île-de-France · City of Light</div>
+        <p>The iron lattice of the Eiffel Tower rises above Haussmann's grand boulevards. Every café, every bridge over the Seine whispers of art and romance.</p>
+        <div class="card-tags">
+          <span class="tag">Eiffel Tower</span>
+          <span class="tag">Art & Culture</span>
+          <span class="tag">River Seine</span>
+        </div>
+      </div>
+    </article>
+
+    <!-- 4. Venice -->
+    <article class="card">
+      <div class="card-img-wrap">
+        <img src="images/venice.webp" alt="Venice, Italy" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="img-placeholder" style="display:none">🚣</div>
+        <div class="card-num">04</div>
+        <div class="card-country-tag">Italy</div>
+      </div>
+      <div class="card-body">
+        <h2>Venice</h2>
+        <div class="subtitle">Veneto Region · City of Canals</div>
+        <p>A floating city of impossible beauty — gondolas glide through turquoise canals beneath Gothic palaces, and every alley leads to a hidden piazza.</p>
+        <div class="card-tags">
+          <span class="tag">Grand Canal</span>
+          <span class="tag">Gondolas</span>
+          <span class="tag">Gothic Architecture</span>
+        </div>
+      </div>
+    </article>
+
+    <!-- 5. New York -->
+    <article class="card">
+      <div class="card-img-wrap">
+        <img src="images/newyork.webp" alt="New York City, USA" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="img-placeholder" style="display:none">🗽</div>
+        <div class="card-num">05</div>
+        <div class="card-country-tag">USA</div>
+      </div>
+      <div class="card-body">
+        <h2>New York City</h2>
+        <div class="subtitle">Manhattan · The Big Apple</div>
+        <p>A skyline that defines human ambition — gleaming towers rise above Central Park's green canopy, the Hudson shimmering in morning light below.</p>
+        <div class="card-tags">
+          <span class="tag">Manhattan Skyline</span>
+          <span class="tag">Central Park</span>
+          <span class="tag">Urban Energy</span>
+        </div>
+      </div>
+    </article>
+
+    <!-- 6. Dubrovnik -->
+    <article class="card">
+      <div class="card-img-wrap">
+        <img src="images/dubrovnik.webp" alt="Dubrovnik, Croatia" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="img-placeholder" style="display:none">🏰</div>
+        <div class="card-num">06</div>
+        <div class="card-country-tag">Croatia</div>
+      </div>
+      <div class="card-body">
+        <h2>Dubrovnik</h2>
+        <div class="subtitle">Dalmatian Coast · Pearl of the Adriatic</div>
+        <p>Medieval limestone walls encircle terracotta rooftops perched above the crystal-clear Adriatic. Walking its ramparts at dusk is pure enchantment.</p>
+        <div class="card-tags">
+          <span class="tag">Medieval Walls</span>
+          <span class="tag">Adriatic Sea</span>
+          <span class="tag">Old Town</span>
+        </div>
+      </div>
+    </article>
+
+    <!-- 7. Prague -->
+    <article class="card">
+      <div class="card-img-wrap">
+        <img src="images/prague.webp" alt="Prague, Czech Republic" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="img-placeholder" style="display:none">🕰️</div>
+        <div class="card-num">07</div>
+        <div class="card-country-tag">Czech Republic</div>
+      </div>
+      <div class="card-body">
+        <h2>Prague</h2>
+        <div class="subtitle">Bohemia · City of a Hundred Spires</div>
+        <p>Gothic spires pierce the sky above a fairy-tale cityscape. The astronomical clock chimes each hour as the Charles Bridge spans the emerald Vltava.</p>
+        <div class="card-tags">
+          <span class="tag">Gothic Spires</span>
+          <span class="tag">Baroque Architecture</span>
+          <span class="tag">Charles Bridge</span>
+        </div>
+      </div>
+    </article>
+
+    <!-- 8. Amalfi Coast -->
+    <article class="card">
+      <div class="card-img-wrap">
+        <img src="images/amalfi.webp" alt="Amalfi Coast, Italy" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="img-placeholder" style="display:none">🌊</div>
+        <div class="card-num">08</div>
+        <div class="card-country-tag">Italy</div>
+      </div>
+      <div class="card-body">
+        <h2>Amalfi Coast</h2>
+        <div class="subtitle">Campania · Southern Italian Riviera</div>
+        <p>Pastel-coloured villages cling to dramatic limestone cliffs above the impossibly blue Tyrrhenian Sea — lemon groves and bougainvillea scent the sea air.</p>
+        <div class="card-tags">
+          <span class="tag">Clifftop Villages</span>
+          <span class="tag">Mediterranean Sea</span>
+          <span class="tag">UNESCO Heritage</span>
+        </div>
+      </div>
+    </article>
+
+    <!-- 9. Machu Picchu -->
+    <article class="card">
+      <div class="card-img-wrap">
+        <img src="images/machupicchu.webp" alt="Machu Picchu, Peru" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="img-placeholder" style="display:none">🏔️</div>
+        <div class="card-num">09</div>
+        <div class="card-country-tag">Peru</div>
+      </div>
+      <div class="card-body">
+        <h2>Machu Picchu</h2>
+        <div class="subtitle">Andes Mountains · Lost City of the Incas</div>
+        <p>Emerging from morning mist above the Sacred Valley, this ancient Inca citadel speaks of a civilization in perfect harmony with the mountains.</p>
+        <div class="card-tags">
+          <span class="tag">Inca Ruins</span>
+          <span class="tag">Andes Mountains</span>
+          <span class="tag">Sacred Valley</span>
+        </div>
+      </div>
+    </article>
+
+    <!-- 10. Tokyo -->
+    <article class="card">
+      <div class="card-img-wrap">
+        <img src="images/tokyo.webp" alt="Tokyo, Japan" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="img-placeholder" style="display:none">🌆</div>
+        <div class="card-num">10</div>
+        <div class="card-country-tag">Japan</div>
+      </div>
+      <div class="card-body">
+        <h2>Tokyo</h2>
+        <div class="subtitle">Kanto Region · Capital of Japan</div>
+        <p>Where neon and tradition collide — Shibuya's scramble crossing pulses with energy as Mount Fuji watches silently over the world's largest metropolis.</p>
+        <div class="card-tags">
+          <span class="tag">Shibuya Crossing</span>
+          <span class="tag">Futuristic Skyline</span>
+          <span class="tag">Neon & Tradition</span>
+        </div>
+      </div>
+    </article>
+
+  </main>
+
+  <footer>
+    <p>Images generated with <a href="https://midjourney.com" target="_blank">Midjourney</a> · Makoto Shinkai Anime Style &nbsp;·&nbsp; Built with Claude Code</p>
+  </footer>
+
+</body>
+</html>
