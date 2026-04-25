@@ -94,6 +94,7 @@
       overflow: hidden;
       aspect-ratio: 16/9;
       background: linear-gradient(135deg, #c8e8f8, #dff0fa);
+      cursor: pointer;
     }
     .card-img-wrap img {
       width: 100%;
@@ -103,6 +104,28 @@
       transition: transform 0.5s ease;
     }
     .card:hover .card-img-wrap img { transform: scale(1.06); }
+
+    /* click hint on image */
+    .card-img-wrap::after {
+      content: '🔍 探索关键词';
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(10, 30, 60, 0.0);
+      color: #fff;
+      font-size: 0.9rem;
+      font-family: sans-serif;
+      letter-spacing: 0.06em;
+      opacity: 0;
+      transition: opacity 0.3s, background 0.3s;
+      pointer-events: none;
+    }
+    .card-img-wrap:hover::after {
+      opacity: 1;
+      background: rgba(10, 30, 60, 0.42);
+    }
 
     .card-num {
       position: absolute;
@@ -192,6 +215,216 @@
       background: linear-gradient(135deg, #b8d8f0 0%, #d8eef8 50%, #c0e0f0 100%);
       font-size: 2.5rem;
     }
+
+    /* ════════════════════════════════════════════
+       KEYWORD MODAL
+    ════════════════════════════════════════════ */
+    .modal-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(10, 25, 50, 0.65);
+      backdrop-filter: blur(4px);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .modal-backdrop.open {
+      display: flex;
+      animation: fadeIn 0.2s ease;
+    }
+    @keyframes fadeIn { from { opacity: 0 } to { opacity: 1 } }
+
+    .modal {
+      background: linear-gradient(160deg, #f0f8ff 0%, #e4f2fc 100%);
+      border-radius: 24px;
+      width: 100%;
+      max-width: 620px;
+      max-height: 88vh;
+      overflow-y: auto;
+      box-shadow: 0 24px 80px rgba(10,30,80,0.35), 0 4px 20px rgba(10,30,80,0.2);
+      animation: slideUp 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+      scrollbar-width: thin;
+      scrollbar-color: #b0cce0 transparent;
+    }
+    @keyframes slideUp {
+      from { transform: translateY(40px); opacity: 0 }
+      to   { transform: translateY(0);    opacity: 1 }
+    }
+
+    .modal-header {
+      position: sticky;
+      top: 0;
+      background: linear-gradient(160deg, #d8eefa 0%, #c8e4f5 100%);
+      padding: 22px 28px 18px;
+      border-bottom: 1px solid rgba(30,80,140,0.1);
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      border-radius: 24px 24px 0 0;
+      z-index: 1;
+    }
+    .modal-header-info { flex: 1; }
+    .modal-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--deep);
+      letter-spacing: 0.02em;
+    }
+    .modal-subtitle {
+      margin-top: 3px;
+      font-size: 0.8rem;
+      color: #6080a0;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      font-family: sans-serif;
+    }
+    .modal-hint {
+      margin-top: 6px;
+      font-size: 0.78rem;
+      color: #88a8c0;
+      font-family: sans-serif;
+    }
+    .modal-close {
+      width: 34px;
+      height: 34px;
+      border: none;
+      background: rgba(30,80,140,0.08);
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 1.1rem;
+      color: #4a6a8a;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
+      flex-shrink: 0;
+      margin-left: 16px;
+      margin-top: 2px;
+    }
+    .modal-close:hover { background: rgba(30,80,140,0.16); }
+
+    .modal-body { padding: 24px 28px 28px; }
+
+    .kw-section { margin-bottom: 22px; }
+    .kw-section:last-child { margin-bottom: 0; }
+    .kw-section-title {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      font-family: sans-serif;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .kw-section-title.culture { color: #7060c0; }
+    .kw-section-title.culture::before { content: ''; display:inline-block; width:8px; height:8px; border-radius:50%; background:#9070e0; }
+    .kw-section-title.landmark { color: #1878c0; }
+    .kw-section-title.landmark::before { content: ''; display:inline-block; width:8px; height:8px; border-radius:50%; background:#2898e0; }
+    .kw-section-title.history { color: #b05820; }
+    .kw-section-title.history::before { content: ''; display:inline-block; width:8px; height:8px; border-radius:50%; background:#d07828; }
+
+    .kw-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 9px;
+    }
+
+    /* keyword chip wrapper — holds the chip + platform picker */
+    .kw-chip-wrap {
+      position: relative;
+      display: inline-flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .kw-chip {
+      padding: 6px 16px;
+      border-radius: 30px;
+      font-size: 0.82rem;
+      font-family: sans-serif;
+      letter-spacing: 0.02em;
+      cursor: pointer;
+      border: 1.5px solid transparent;
+      transition: transform 0.15s, box-shadow 0.15s, background 0.15s;
+      white-space: nowrap;
+      user-select: none;
+    }
+    .kw-chip:hover { transform: translateY(-2px); }
+    .kw-chip:active { transform: translateY(0); }
+
+    .kw-chip.culture {
+      background: #ede8fc;
+      color: #5040a8;
+      border-color: #c8b8f0;
+    }
+    .kw-chip.culture:hover {
+      background: #ddd4f8;
+      box-shadow: 0 4px 12px rgba(100,80,200,0.2);
+    }
+    .kw-chip.landmark {
+      background: #ddeeff;
+      color: #1060a8;
+      border-color: #a8d0f0;
+    }
+    .kw-chip.landmark:hover {
+      background: #c8e4f8;
+      box-shadow: 0 4px 12px rgba(30,100,200,0.2);
+    }
+    .kw-chip.history {
+      background: #fde8d0;
+      color: #904010;
+      border-color: #f0b880;
+    }
+    .kw-chip.history:hover {
+      background: #fad8b8;
+      box-shadow: 0 4px 12px rgba(180,80,20,0.18);
+    }
+
+    /* platform picker bubble */
+    .platform-picker {
+      display: none;
+      position: absolute;
+      top: calc(100% + 8px);
+      left: 0;
+      background: #fff;
+      border-radius: 14px;
+      box-shadow: 0 8px 28px rgba(10,30,80,0.22), 0 2px 8px rgba(10,30,80,0.1);
+      padding: 10px;
+      gap: 8px;
+      flex-direction: row;
+      z-index: 10;
+      animation: popIn 0.18s cubic-bezier(0.22,1,0.36,1);
+      white-space: nowrap;
+    }
+    .platform-picker.visible { display: flex; }
+    @keyframes popIn {
+      from { transform: scale(0.85) translateY(-4px); opacity: 0 }
+      to   { transform: scale(1) translateY(0);       opacity: 1 }
+    }
+
+    .platform-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 14px;
+      border-radius: 10px;
+      font-size: 0.8rem;
+      font-family: sans-serif;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: transform 0.15s, filter 0.15s;
+      letter-spacing: 0.02em;
+      text-decoration: none;
+      color: #fff;
+    }
+    .platform-btn:hover { transform: scale(1.06); filter: brightness(1.08); }
+    .platform-btn.youtube { background: linear-gradient(135deg, #ff3d3d, #cc0000); }
+    .platform-btn.bilibili { background: linear-gradient(135deg, #23ade5, #0880c8); }
   </style>
 </head>
 <body>
@@ -207,7 +440,7 @@
   <main class="grid">
 
     <!-- 1. Santorini -->
-    <article class="card">
+    <article class="card" data-dest="santorini">
       <div class="card-img-wrap">
         <img src="images/santorini.webp" alt="Santorini, Greece" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
         <div class="img-placeholder" style="display:none">🏛️</div>
@@ -227,7 +460,7 @@
     </article>
 
     <!-- 2. Kyoto -->
-    <article class="card">
+    <article class="card" data-dest="kyoto">
       <div class="card-img-wrap">
         <img src="images/kyoto.webp" alt="Kyoto, Japan" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
         <div class="img-placeholder" style="display:none">⛩️</div>
@@ -247,7 +480,7 @@
     </article>
 
     <!-- 3. Paris -->
-    <article class="card">
+    <article class="card" data-dest="paris">
       <div class="card-img-wrap">
         <img src="images/paris.webp" alt="Paris, France" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
         <div class="img-placeholder" style="display:none">🗼</div>
@@ -267,7 +500,7 @@
     </article>
 
     <!-- 4. Venice -->
-    <article class="card">
+    <article class="card" data-dest="venice">
       <div class="card-img-wrap">
         <img src="images/venice.webp" alt="Venice, Italy" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
         <div class="img-placeholder" style="display:none">🚣</div>
@@ -287,7 +520,7 @@
     </article>
 
     <!-- 5. New York -->
-    <article class="card">
+    <article class="card" data-dest="newyork">
       <div class="card-img-wrap">
         <img src="images/newyork.webp" alt="New York City, USA" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
         <div class="img-placeholder" style="display:none">🗽</div>
@@ -307,7 +540,7 @@
     </article>
 
     <!-- 6. Dubrovnik -->
-    <article class="card">
+    <article class="card" data-dest="dubrovnik">
       <div class="card-img-wrap">
         <img src="images/dubrovnik.webp" alt="Dubrovnik, Croatia" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
         <div class="img-placeholder" style="display:none">🏰</div>
@@ -327,7 +560,7 @@
     </article>
 
     <!-- 7. Prague -->
-    <article class="card">
+    <article class="card" data-dest="prague">
       <div class="card-img-wrap">
         <img src="images/prague.webp" alt="Prague, Czech Republic" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
         <div class="img-placeholder" style="display:none">🕰️</div>
@@ -347,7 +580,7 @@
     </article>
 
     <!-- 8. Amalfi Coast -->
-    <article class="card">
+    <article class="card" data-dest="amalfi">
       <div class="card-img-wrap">
         <img src="images/amalfi.webp" alt="Amalfi Coast, Italy" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
         <div class="img-placeholder" style="display:none">🌊</div>
@@ -367,7 +600,7 @@
     </article>
 
     <!-- 9. Machu Picchu -->
-    <article class="card">
+    <article class="card" data-dest="machupicchu">
       <div class="card-img-wrap">
         <img src="images/machupicchu.webp" alt="Machu Picchu, Peru" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
         <div class="img-placeholder" style="display:none">🏔️</div>
@@ -387,7 +620,7 @@
     </article>
 
     <!-- 10. Tokyo -->
-    <article class="card">
+    <article class="card" data-dest="tokyo">
       <div class="card-img-wrap">
         <img src="images/tokyo.webp" alt="Tokyo, Japan" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
         <div class="img-placeholder" style="display:none">🌆</div>
@@ -411,6 +644,187 @@
   <footer>
     <p>Images generated with <a href="https://midjourney.com" target="_blank">Midjourney</a> · Makoto Shinkai Anime Style &nbsp;·&nbsp; Built with Claude Code</p>
   </footer>
+
+  <!-- ── Keyword Modal ── -->
+  <div class="modal-backdrop" id="modalBackdrop">
+    <div class="modal" id="modal">
+      <div class="modal-header">
+        <div class="modal-header-info">
+          <div class="modal-title" id="modalTitle"></div>
+          <div class="modal-subtitle" id="modalSubtitle"></div>
+          <div class="modal-hint">点击关键词 → 选择平台搜索</div>
+        </div>
+        <button class="modal-close" id="modalClose">✕</button>
+      </div>
+      <div class="modal-body" id="modalBody"></div>
+    </div>
+  </div>
+
+  <script>
+    // ── Keyword Data ─────────────────────────────────────────────────────────
+    const DESTINATIONS = {
+      santorini: {
+        title: 'Santorini',
+        subtitle: 'Cyclades Islands · Greece',
+        culture: ['Greek Orthodox Churches', 'Cycladic Architecture', 'Aegean Cuisine', 'Assyrtiko Wine', 'Whitewashed Villages', 'Greek Festival'],
+        landmark: ['Oia Sunset Santorini', 'Santorini Caldera', 'Fira Town', 'Red Beach Santorini', 'Akrotiri Ruins', 'Blue Dome Church'],
+        history: ['Minoan Civilization Santorini', 'Thera Volcanic Eruption', 'Bronze Age Greece', 'Ancient Thera', 'Lost Atlantis Theory'],
+      },
+      kyoto: {
+        title: 'Kyoto',
+        subtitle: 'Kansai Region · Japan',
+        culture: ['Japanese Tea Ceremony', 'Geisha Maiko Kyoto', 'Zen Buddhism', 'Ikebana Flower Arranging', 'Kyoto Cuisine Kaiseki', 'Nishiki Market'],
+        landmark: ['Fushimi Inari Shrine', 'Kinkaku-ji Golden Pavilion', 'Arashiyama Bamboo Grove', 'Nijo Castle Kyoto', 'Gion District', 'Kiyomizu-dera Temple'],
+        history: ['Heian Period Japan', 'Kyoto Imperial Palace', 'Shogunate Feudal Japan', 'Samurai Kyoto History', 'Onin War Kyoto', 'Meiji Restoration'],
+      },
+      paris: {
+        title: 'Paris',
+        subtitle: 'Île-de-France · France',
+        culture: ['French Cuisine Paris', 'Impressionism Art Movement', 'Paris Fashion Week', 'Parisian Café Culture', 'French Patisserie', 'Paris Opera Ballet'],
+        landmark: ['Eiffel Tower Paris', 'Louvre Museum', 'Notre-Dame Cathedral', 'Montmartre Sacré-Cœur', 'Seine River Cruise Paris', 'Versailles Palace'],
+        history: ['French Revolution', 'Napoleon Bonaparte', 'Paris Belle Époque', 'Paris Commune 1871', 'Liberation of Paris 1944', 'Louis XIV Versailles'],
+      },
+      venice: {
+        title: 'Venice',
+        subtitle: 'Veneto Region · Italy',
+        culture: ['Venice Carnival Masks', 'Venetian Glass Murano', 'Venice Biennale Art', 'Gondolier Venice', 'Venetian Cuisine Cicchetti', 'La Fenice Opera'],
+        landmark: ['St Mark\'s Basilica Venice', 'Doge\'s Palace Venice', 'Rialto Bridge Venice', 'Grand Canal Venice', 'Murano Island Glass', 'Bridge of Sighs'],
+        history: ['Republic of Venice History', 'Marco Polo Venice', 'Byzantine Venice Architecture', 'Venice Silk Road Trade', 'Fall of Venice Napoleon', 'Venetian Arsenal'],
+      },
+      newyork: {
+        title: 'New York City',
+        subtitle: 'Manhattan · USA',
+        culture: ['Broadway Theater NYC', 'NYC Jazz Music', 'Metropolitan Museum of Art', 'New York Street Food', 'Harlem Renaissance', 'NYC Fashion NYFW'],
+        landmark: ['Statue of Liberty New York', 'Central Park New York', 'Times Square NYC', 'Brooklyn Bridge', 'Empire State Building', 'High Line Park NYC'],
+        history: ['Ellis Island Immigration', 'Harlem Renaissance History', 'New York 9/11 Memorial', 'Dutch New Amsterdam History', 'NYC Gilded Age', 'Stonewall Riots NYC'],
+      },
+      dubrovnik: {
+        title: 'Dubrovnik',
+        subtitle: 'Dalmatian Coast · Croatia',
+        culture: ['Dalmatian Cuisine Croatia', 'Croatian Klapa Music', 'Dubrovnik Summer Festival', 'Croatian Wine Plavac Mali', 'Adriatic Seafood', 'Croatian Folk Costume'],
+        landmark: ['Dubrovnik City Walls Walk', 'Old Town Dubrovnik', 'Lovrijenac Fortress', 'Lokrum Island Dubrovnik', 'Dubrovnik Cable Car', 'Stradun Promenade'],
+        history: ['Republic of Ragusa History', 'Game of Thrones Dubrovnik', 'Dubrovnik UNESCO World Heritage', 'Croatian War of Independence', 'Ottoman Siege Dubrovnik', 'Ragusa Medieval Trade'],
+      },
+      prague: {
+        title: 'Prague',
+        subtitle: 'Bohemia · Czech Republic',
+        culture: ['Czech Beer Culture Prague', 'Dvořák Classical Music', 'Czech Puppetry UNESCO', 'Bohemian Crystal Glass', 'Prague Black Light Theatre', 'Czech Cuisine Svíčková'],
+        landmark: ['Prague Castle', 'Charles Bridge Prague', 'Prague Old Town Square', 'Prague Astronomical Clock', 'Wenceslas Square', 'Jewish Quarter Josefov'],
+        history: ['Holy Roman Empire Prague', 'Bohemian Kingdom History', 'Velvet Revolution Prague', 'Franz Kafka Prague', 'Prague Spring 1968', 'Thirty Years War Bohemia'],
+      },
+      amalfi: {
+        title: 'Amalfi Coast',
+        subtitle: 'Campania · Italy',
+        culture: ['Limoncello Amalfi', 'Positano Style Fashion', 'Mediterranean Diet', 'Amalfi Coast Ceramics', 'Southern Italian Cuisine', 'Tarantella Folk Dance'],
+        landmark: ['Amalfi Cathedral', 'Path of the Gods Hiking', 'Ravello Villa Gardens', 'Positano Village', 'Furore Fjord', 'Scala Ravello Walk'],
+        history: ['Amalfi Maritime Republic', 'Norman Conquest South Italy', 'Amalfi Coast UNESCO Heritage', 'Amalfi Paper Museum', 'Ancient Roman Villas Amalfi', 'Byzantine Influence Amalfi'],
+      },
+      machupicchu: {
+        title: 'Machu Picchu',
+        subtitle: 'Andes Mountains · Peru',
+        culture: ['Quechua People Culture', 'Inca Cosmology Pachamama', 'Andean Textiles Weaving', 'Inti Raymi Sun Festival', 'Peruvian Cuisine', 'Andean Music Charango'],
+        landmark: ['Machu Picchu Intihuatana Stone', 'Temple of the Sun Machu Picchu', 'Huayna Picchu Mountain', 'Sun Gate Inti Punku', 'Sacred Valley Peru', 'Inca Trail Hike'],
+        history: ['Inca Empire History', 'Hiram Bingham Discovery 1911', 'Spanish Conquest Peru', 'Lost City of the Incas Mystery', 'Tawantinsuyu Inca Civilization', 'Pachacuti Inca Emperor'],
+      },
+      tokyo: {
+        title: 'Tokyo',
+        subtitle: 'Kanto Region · Japan',
+        culture: ['Tokyo Anime Manga Culture', 'Sushi Ramen Tokyo', 'Harajuku Fashion Street', 'Akihabara Otaku Culture', 'Tokyo Street Food', 'Japanese Onsen Culture'],
+        landmark: ['Shibuya Crossing Tokyo', 'Senso-ji Temple Asakusa', 'Tokyo Tower', 'Shinjuku District Night', 'Tokyo Skytree', 'Tsukiji Fish Market'],
+        history: ['Edo Period Tokyo History', 'Meiji Restoration Japan', 'Tokyo World War II', 'Japan Economic Miracle', 'Tokugawa Shogunate', 'Great Kanto Earthquake 1923'],
+      },
+    };
+
+    // ── Modal Logic ──────────────────────────────────────────────────────────
+    const backdrop  = document.getElementById('modalBackdrop');
+    const modal     = document.getElementById('modal');
+    const titleEl   = document.getElementById('modalTitle');
+    const subtitleEl= document.getElementById('modalSubtitle');
+    const bodyEl    = document.getElementById('modalBody');
+    const closeBtn  = document.getElementById('modalClose');
+
+    let activePickerWrap = null; // currently open platform picker
+
+    function openModal(destKey) {
+      const data = DESTINATIONS[destKey];
+      if (!data) return;
+
+      titleEl.textContent   = data.title;
+      subtitleEl.textContent = data.subtitle;
+
+      const sections = [
+        { key: 'culture',  label: '🎭 文化',  cls: 'culture'  },
+        { key: 'landmark', label: '🗺️ 景点',  cls: 'landmark' },
+        { key: 'history',  label: '📜 历史',  cls: 'history'  },
+      ];
+
+      bodyEl.innerHTML = sections.map(sec => `
+        <div class="kw-section">
+          <div class="kw-section-title ${sec.cls}">${sec.label}</div>
+          <div class="kw-chips">
+            ${data[sec.key].map(kw => `
+              <div class="kw-chip-wrap">
+                <div class="kw-chip ${sec.cls}" data-keyword="${kw}">${kw}</div>
+                <div class="platform-picker">
+                  <a class="platform-btn youtube" href="${ytUrl(kw)}" target="_blank" rel="noopener">▶ YouTube</a>
+                  <a class="platform-btn bilibili" href="${biliUrl(kw)}" target="_blank" rel="noopener">📺 Bilibili</a>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `).join('');
+
+      // attach chip click handlers
+      bodyEl.querySelectorAll('.kw-chip').forEach(chip => {
+        chip.addEventListener('click', e => {
+          e.stopPropagation();
+          const wrap   = chip.parentElement;
+          const picker = wrap.querySelector('.platform-picker');
+
+          if (activePickerWrap && activePickerWrap !== wrap) {
+            activePickerWrap.querySelector('.platform-picker').classList.remove('visible');
+          }
+          picker.classList.toggle('visible');
+          activePickerWrap = picker.classList.contains('visible') ? wrap : null;
+        });
+      });
+
+      backdrop.classList.add('open');
+      activePickerWrap = null;
+    }
+
+    function closeModal() {
+      backdrop.classList.remove('open');
+      activePickerWrap = null;
+    }
+
+    function ytUrl(kw)   { return `https://www.youtube.com/results?search_query=${encodeURIComponent(kw)}`; }
+    function biliUrl(kw) { return `https://search.bilibili.com/all?keyword=${encodeURIComponent(kw)}`; }
+
+    // click on image area to open modal
+    document.querySelectorAll('.card-img-wrap').forEach(wrap => {
+      wrap.addEventListener('click', () => {
+        const destKey = wrap.closest('.card').dataset.dest;
+        openModal(destKey);
+      });
+    });
+
+    // close on backdrop click
+    backdrop.addEventListener('click', e => { if (e.target === backdrop) closeModal(); });
+    closeBtn.addEventListener('click', closeModal);
+
+    // close on Escape
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+    // close picker when clicking elsewhere inside modal
+    modal.addEventListener('click', e => {
+      if (!e.target.closest('.kw-chip-wrap') && activePickerWrap) {
+        activePickerWrap.querySelector('.platform-picker').classList.remove('visible');
+        activePickerWrap = null;
+      }
+    });
+  </script>
 
 </body>
 </html>
